@@ -1,0 +1,12 @@
+---
+title: "Template post"
+author: "Sreehari Pulickamadhom Sreedhar"
+date: last-modified
+categories: [] # All relevant policy areas
+#image: "thumbnail.jpg"
+execute:
+    echo: false
+draft: true
+---
+
+This is a post with executable code.

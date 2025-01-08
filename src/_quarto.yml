@@ -5,16 +5,19 @@ project:
 website:
   title: "Saga"
   navbar:
-    right:
-      - about.qmd
+    left:
       - icon: github
-        href: https://github.com/
-      - icon: twitter
-        href: https://twitter.com
+        href: https://github.com/spulick/saga_notebooks_quarto
+  sidebar: 
+    style: "docked"
+    search: true
+  page-navigation: true
 format:
   html:
-    theme: sketchy
+    theme: 
+      light: litera
+      dark: sketchy
     css: styles.css
-
+    page-layout: full
 
 

@@ -1,0 +1,160 @@
+---
+title: "Large scale power station approvals in Oct 2023 - Oct 2024"
+author: ["Sreehari Pulickamadhom Sreedhar"]
+date: last-modified
+categories: [] # All relevant policy areas
+#image: "thumbnail.jpg"
+execute:
+    echo: false
+draft: false
+---
+
+Australia's clean energy landscape is rapidly evolving, with a surge in the development and construction of renewable energy power plants across the country. This shift towards sustainable energy sources is driven by a combination of factors, including increasing concerns about climate change, falling costs of renewable technologies, and supportive government policies.
+
+```{ojs}
+approved = FileAttachment("approved_sum.json").json();
+local_govs = FileAttachment("local_govs.json").json();
+
+approved_feats = {
+  return approved.features
+}
+
+local_govs_feats = {
+  return local_govs.features
+}
+```
+
+```{ojs}
+hmlImg = require("html-to-image");
+
+function download_graph(plot) {
+  hmlImg.toPng(plot, { pixelRatio: 2, backgroundColor: "white" })
+  .then(function (dataUrl) {
+    var link = document.createElement('a');
+    link.download = 'alga_graphic.png';
+    link.href = dataUrl;
+    link.click();
+  });
+}
+function legendSpike(values, {frameAnchor = "bottom-right", format = "~s", stroke} = {}) {
+  if (!Array.isArray(values)) values = Array.from(values);
+  if (typeof format !== "function") format = d3.format(format);
+  return Plot.marks(
+    values.map((v, i) => {
+      const dx = (i - values.length) * 18;
+      return [
+        Plot.spike([v], {
+          length: [v+100],
+          dx,
+          dy: -50,
+          frameAnchor,
+          stroke
+        }),
+        Plot.text([v], {
+          text: [format(v) + " MW"],
+          dx,
+          dy: -20,
+          frameAnchor,
+          textAnchor: "middle",
+          rotate: -60
+        }),
+      ];
+    })
+  );
+}
+```
+
+```{ojs}
+plot = {return Plot.plot({
+  //width: "800px",
+  color: { scheme: "Viridis", legend: true },
+  //margin: 30,
+  inset: 5,
+  title: htl.html` 
+<div style=${{fontSize: 14}}>
+  <h1>Cry renewable</h1>
+  <h2>And let slip clean megawatts</h2>
+  </div> `,
+  //subtitle: htl.html`<h2>And let slip clean megawatts</h2>`,
+  caption: htl.html`
+<div style=${{width: "100%", height: "auto"}}>
+  <div style=${{float: "left", width: "50%", textAlign: "left"}}>
+    <a href="https://cer.gov.au/markets/reports-and-data/large-scale-renewable-energy-data">Large-scale renewable energy data | Clean Energy Regulator</a>
+  </div>
+    <div style=${{float: "left", width: "50%", textAlign: "right"}}>
+    <a>Australian Local Government Association</a>
+</div>
+</div>`,
+  grid: true,
+
+  style : {
+    width: "100%",
+    //height: width*.6,
+    fontFamily: "serif",
+    padding: 10,
+    color: "black",
+    backgroundRepeat: "no-repeat",
+    //backgroundPosition: "120% -20%"
+    backgroundPosition: "300% 400%",
+    backgroundBlendMode: "normal"
+    
+  },
+  
+  projection:{
+    type: "azimuthal-equal-area",
+    rotate: [-133, 27],
+    domain: {type: "MultiPoint", coordinates: [[110, -24], [160, -28], [141, -10.5], [146, -44]]}
+  },
+  marks : [
+    Plot.geo(local_govs_feats, {fill: "currentColor", fillOpacity: 0.25, stroke: "white", strokeWidth: 0.9}),
+    
+    Plot.spike(approved_feats, Plot.geoCentroid({ stroke: "green", length: (d) => d.properties.capacity + 100, strokeWidth: 0.6})),
+    legendSpike([1, 200, 300, 400, 500], {stroke: "green"}),
+        
+    //Plot.dot(approved_feats, Plot.hexbin({r: "sum"}, Plot.geoCentroid()))
+  ]
+});
+}
+```
+
+```{ojs}
+  Inputs.button(
+    "Download graph",
+    {
+      value: null,
+      reduce: () => download_graph(plot)
+    }
+  )
+```
+
+**Key Trends:**
+
+-   **Solar Power:** Australia boasts abundant sunshine, making it an ideal location for large-scale solar farms. Several major projects are underway, including the massive Port Augusta Renewable Energy Park in South Australia and the Nyngan Solar Plant in New South Wales. These projects utilize photovoltaic (PV) technology to convert sunlight directly into electricity.[^1]
+
+[^1]: Biggar, Paul, Nash, Nicholas, Williams, Kevin, and Gregg, David. 2008. ‘An experimental study of sorting and branch prediction.’ ACM Journal of Experimental Algorithmics. 12 (Jun. 2008), 1-39.
+
+-   **Wind Power:** With vast stretches of land suitable for wind farms, Australia is also a major player in wind energy generation. Notable projects include the Macarthur Wind Farm in Victoria and the Stockyard Hill Wind Farm in South Australia. These wind farms harness the kinetic energy of the wind to produce electricity.
+
+-   **Hydro Power:** Australia's diverse geography includes numerous rivers and dams, making it well-suited for hydropower generation. Snowy Hydro, one of the largest renewable energy producers in Australia, operates a system of hydroelectric power stations in the Snowy Mountains region of New South Wales and Victoria.
+
+-   **Battery Storage:** To address the intermittent nature of renewable energy sources, Australia is investing in large-scale battery storage systems. These batteries can store excess energy generated during peak production periods and release it when demand is high, ensuring a reliable and stable power supply.
+
+
+**Government Support:**
+
+The Australian government has implemented various policies and incentives to promote the development of clean energy projects. These include renewable energy targets, feed-in tariffs, and investment in research and development. These initiatives have played a crucial role in attracting significant investment in the clean energy sector.
+
+**Benefits:**
+
+The construction and operation of clean energy power plants in Australia offer several benefits, including:
+
+-   **Reduced greenhouse gas emissions:** By transitioning from fossil fuel-based power generation to renewable energy sources, Australia can significantly reduce its carbon footprint and contribute to global efforts to combat climate change.
+-   **Job creation:** The clean energy sector is a major employer, creating jobs in construction, operation, and maintenance of renewable energy facilities.[^2]
+-   **Economic growth:** Investment in clean energy projects stimulates economic activity and contributes to regional development.
+-   **Energy security:** By diversifying its energy mix and reducing reliance on imported fossil fuels, Australia can enhance its energy security.
+
+[^2]: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+Australia's commitment to clean energy is evident in the growing number of renewable energy projects across the country. As technology continues to advance and costs decline, the nation is well-positioned to become a global leader in sustainable energy production.
+
+These footnots are placeholders and the content was generated by a Large Language Model.

@@ -1,30 +1,23 @@
 [
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
-    "section": "",
-    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
-  },
-  {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "src",
+    "title": "Graphics and chitchat",
     "section": "",
-    "text": "Post With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nJan 6, 2025\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJan 3, 2025\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+    "text": "Date\n\n\nTitle\n\n\nAuthor\n\n\n\n\n\n\nJan 8, 2025\n\n\nLarge scale power station approvals in Oct 2023 - Oct 2024\n\n\nSreehari Pulickamadhom Sreedhar\n\n\n\n\n\nNo matching items"
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "posts/power_stations/index.html",
+    "href": "posts/power_stations/index.html",
+    "title": "Large scale power station approvals in Oct 2023 - Oct 2024",
     "section": "",
-    "text": "About this blog"
+    "text": "Australia’s clean energy landscape is rapidly evolving, with a surge in the development and construction of renewable energy power plants across the country. This shift towards sustainable energy sources is driven by a combination of factors, including increasing concerns about climate change, falling costs of renewable technologies, and supportive government policies.\napproved = FileAttachment(\"approved_sum.json\").json();\nlocal_govs = FileAttachment(\"local_govs.json\").json();\n\napproved_feats = {\n  return approved.features\n}\n\nlocal_govs_feats = {\n  return local_govs.features\n}\nhmlImg = require(\"html-to-image\");\n\nfunction download_graph(plot) {\n  hmlImg.toPng(plot, { pixelRatio: 2, backgroundColor: \"white\" })\n  .then(function (dataUrl) {\n    var link = document.createElement('a');\n    link.download = 'alga_graphic.png';\n    link.href = dataUrl;\n    link.click();\n  });\n}\nfunction legendSpike(values, {frameAnchor = \"bottom-right\", format = \"~s\", stroke} = {}) {\n  if (!Array.isArray(values)) values = Array.from(values);\n  if (typeof format !== \"function\") format = d3.format(format);\n  return Plot.marks(\n    values.map((v, i) =&gt; {\n      const dx = (i - values.length) * 18;\n      return [\n        Plot.spike([v], {\n          length: [v+100],\n          dx,\n          dy: -50,\n          frameAnchor,\n          stroke\n        }),\n        Plot.text([v], {\n          text: [format(v) + \" MW\"],\n          dx,\n          dy: -20,\n          frameAnchor,\n          textAnchor: \"middle\",\n          rotate: -60\n        }),\n      ];\n    })\n  );\n}\nplot = {return Plot.plot({\n  //width: \"800px\",\n  color: { scheme: \"Viridis\", legend: true },\n  //margin: 30,\n  inset: 5,\n  title: htl.html` \n&lt;div style=${{fontSize: 14}}&gt;\n  &lt;h1&gt;Cry renewable&lt;/h1&gt;\n  &lt;h2&gt;And let slip clean megawatts&lt;/h2&gt;\n  &lt;/div&gt; `,\n  //subtitle: htl.html`&lt;h2&gt;And let slip clean megawatts&lt;/h2&gt;`,\n  caption: htl.html`\n&lt;div style=${{width: \"100%\", height: \"auto\"}}&gt;\n  &lt;div style=${{float: \"left\", width: \"50%\", textAlign: \"left\"}}&gt;\n    &lt;a href=\"https://cer.gov.au/markets/reports-and-data/large-scale-renewable-energy-data\"&gt;Large-scale renewable energy data | Clean Energy Regulator&lt;/a&gt;\n  &lt;/div&gt;\n    &lt;div style=${{float: \"left\", width: \"50%\", textAlign: \"right\"}}&gt;\n    &lt;a&gt;Australian Local Government Association&lt;/a&gt;\n&lt;/div&gt;\n&lt;/div&gt;`,\n  grid: true,\n\n  style : {\n    width: \"100%\",\n    //height: width*.6,\n    fontFamily: \"serif\",\n    padding: 10,\n    color: \"black\",\n    backgroundRepeat: \"no-repeat\",\n    //backgroundPosition: \"120% -20%\"\n    backgroundPosition: \"300% 400%\",\n    backgroundBlendMode: \"normal\"\n    \n  },\n  \n  projection:{\n    type: \"azimuthal-equal-area\",\n    rotate: [-133, 27],\n    domain: {type: \"MultiPoint\", coordinates: [[110, -24], [160, -28], [141, -10.5], [146, -44]]}\n  },\n  marks : [\n    Plot.geo(local_govs_feats, {fill: \"currentColor\", fillOpacity: 0.25, stroke: \"white\", strokeWidth: 0.9}),\n    \n    Plot.spike(approved_feats, Plot.geoCentroid({ stroke: \"green\", length: (d) =&gt; d.properties.capacity + 100, strokeWidth: 0.6})),\n    legendSpike([1, 200, 300, 400, 500], {stroke: \"green\"}),\n        \n    //Plot.dot(approved_feats, Plot.hexbin({r: \"sum\"}, Plot.geoCentroid()))\n  ]\n});\n}\nInputs.button(\n    \"Download graph\",\n    {\n      value: null,\n      reduce: () =&gt; download_graph(plot)\n    }\n  )\nKey Trends:\nGovernment Support:\nThe Australian government has implemented various policies and incentives to promote the development of clean energy projects. These include renewable energy targets, feed-in tariffs, and investment in research and development. These initiatives have played a crucial role in attracting significant investment in the clean energy sector.\nBenefits:\nThe construction and operation of clean energy power plants in Australia offer several benefits, including:\nAustralia’s commitment to clean energy is evident in the growing number of renewable energy projects across the country. As technology continues to advance and costs decline, the nation is well-positioned to become a global leader in sustainable energy production.\nThese footnots are placeholders and the content was generated by a Large Language Model."
   },
   {
-    "objectID": "posts/post-with-code/index.html",
-    "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
-    "section": "",
-    "text": "This is a post with executable code."
+    "objectID": "posts/power_stations/index.html#footnotes",
+    "href": "posts/power_stations/index.html#footnotes",
+    "title": "Large scale power station approvals in Oct 2023 - Oct 2024",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nBiggar, Paul, Nash, Nicholas, Williams, Kevin, and Gregg, David. 2008. ‘An experimental study of sorting and branch prediction.’ ACM Journal of Experimental Algorithmics. 12 (Jun. 2008), 1-39.↩︎\nhttps://www.youtube.com/watch?v=dQw4w9WgXcQ↩︎"
   }
 ]
